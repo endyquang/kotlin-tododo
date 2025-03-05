@@ -32,6 +32,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(compose.ui)
+            implementation(libs.androidx.ui.text.google.fonts)
             implementation(compose.animationGraphics)
             implementation(compose.material3)
             implementation(compose.components.resources)
