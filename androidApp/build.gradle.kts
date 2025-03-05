@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.ndq.tododo.android"
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         applicationId = "com.ndq.tododo.android"
         minSdk = 24
