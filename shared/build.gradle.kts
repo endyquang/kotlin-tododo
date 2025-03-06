@@ -38,8 +38,14 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.runtime)
-            implementation(compose.foundation)
             implementation(compose.animation)
+            implementation(compose.foundation)
+            implementation(compose.materialIconsExtended)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.adaptive)
+            implementation(libs.adaptive.layout)
+            implementation(libs.adaptive.navigation)
+            implementation(compose.material3AdaptiveNavigationSuite)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

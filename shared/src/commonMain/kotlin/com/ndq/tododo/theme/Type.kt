@@ -2,6 +2,8 @@ package com.ndq.tododo.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 
 val fontFamily = getFontFamily()
 
@@ -14,7 +16,12 @@ val AppTypography = Typography(
     displaySmall = baseline.displaySmall.copy(fontFamily = fontFamily),
     headlineLarge = baseline.headlineLarge.copy(fontFamily = fontFamily),
     headlineMedium = baseline.headlineMedium.copy(fontFamily = fontFamily),
-    headlineSmall = baseline.headlineSmall.copy(fontFamily = fontFamily),
+    headlineSmall = baseline.headlineSmall.copy(
+        fontSize = 40.sp,
+        lineHeight = 48.sp,
+        fontWeight = FontWeight.W600,
+        fontFamily = fontFamily,
+    ),
     titleLarge = baseline.titleLarge.copy(fontFamily = fontFamily),
     titleMedium = baseline.titleMedium.copy(fontFamily = fontFamily),
     titleSmall = baseline.titleSmall.copy(fontFamily = fontFamily),
