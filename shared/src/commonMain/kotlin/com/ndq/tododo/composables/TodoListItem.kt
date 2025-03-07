@@ -22,7 +22,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ndq.tododo.models.TodoModel
+import com.ndq.tododo.models.Todo
+import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
@@ -30,7 +31,7 @@ class TodoItem {}
 
 @Composable
 fun TodoListItem(
-    item: TodoModel,
+    item: Todo,
     onPressed: () -> Unit,
     onCompletedChanged: (Boolean) -> Unit,
 ) {
@@ -66,9 +67,10 @@ fun TodoListItem(
                     modifier = Modifier.height(4.dp),
                 )
                 Text(
-                    (item.scheduleAt ?: item.updatedAt).toLocalDateTime(
-                        TimeZone.UTC
-                    ).date.toString()
+                    Instant.fromEpochMilliseconds(item.scheduleAt ?: item.updatedAt)
+                        .toLocalDateTime(TimeZone.UTC)
+                        .date
+                        .toString()
                 )
             }
             Spacer(

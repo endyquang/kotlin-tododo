@@ -27,18 +27,20 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun DateField(
-    value: Instant?,
-    onChanged: (Instant?) -> Unit,
+    value: Long?,
+    onChanged: (Long?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showModal by remember { mutableStateOf(false) }
 
     TextField(
-        value = value?.toLocalDateTime(TimeZone.UTC)?.date?.toString() ?: "",
+        value = if (value == null) "" else Instant.fromEpochMilliseconds(value)
+            .toLocalDateTime(TimeZone.UTC).date.toString(),
         onValueChange = { },
         placeholder = { Text("Date") },
         trailingIcon = {
@@ -66,10 +68,7 @@ fun DateField(
 
     if (showModal) {
         DatePickerModal(
-            onDateSelected = {
-                val selected = if (it == null) null else Instant.fromEpochMilliseconds(it)
-                onChanged(selected)
-            },
+            onDateSelected = {  onChanged(it) },
             onDismiss = { showModal = false }
         )
     }
