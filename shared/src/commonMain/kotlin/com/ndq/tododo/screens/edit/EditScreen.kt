@@ -10,9 +10,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
@@ -26,7 +30,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -36,6 +42,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ndq.tododo.LocalNavController
 import com.ndq.tododo.composables.DateField
 import com.ndq.tododo.models.Todo
+import com.ndq.tododo.models.TodoStatus
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -69,7 +76,9 @@ fun EditScreen(viewModel: EditViewModel) {
                     }
                 },
                 actions = {
-                    if (!isLoading && (isChanged || isAddNew))
+                    var menuExpanded by remember { mutableStateOf(false) }
+
+                    if (!isLoading && (isChanged || isAddNew)) {
                         FilledTonalButton(
                             onClick = {
                                 viewModel.save(
@@ -90,6 +99,39 @@ fun EditScreen(viewModel: EditViewModel) {
                                 style = MaterialTheme.typography.bodyLarge
                             )
                         }
+
+                        Spacer(modifier = Modifier.width(8.dp))
+                    }
+
+                    Box {
+                        IconButton(onClick = { menuExpanded = !menuExpanded }) {
+                            Icon(Icons.Filled.MoreVert, "Menu")
+                        }
+
+                        DropdownMenu(
+                            expanded = menuExpanded,
+                            onDismissRequest = { menuExpanded = false }
+                        ) {
+                            for (status in TodoStatus.entries) {
+                                if (initialTodo?.status != status) {
+                                    DropdownMenuItem(
+                                        text = { Text("Mark as ${status.displayName}") },
+                                        onClick = {
+                                            viewModel.updateStatus(status)
+                                            navController.popBackStack()
+                                        }
+                                    )
+                                }
+                            }
+                            DropdownMenuItem(
+                                text = { Text("Delete") },
+                                onClick = {
+                                    viewModel.delete()
+                                    navController.popBackStack()
+                                }
+                            )
+                        }
+                    }
                 }
             )
         },

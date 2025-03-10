@@ -1,12 +1,9 @@
 package com.ndq.tododo.screens.home
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -34,7 +31,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ndq.tododo.LocalNavController
-import com.ndq.tododo.composables.DropdownButton
 import com.ndq.tododo.composables.TodoListItem
 import com.ndq.tododo.models.TodoStatus
 import com.ndq.tododo.screens.edit.Edit
@@ -65,10 +61,10 @@ fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
                 placeholder = { Text("Search") },
                 shape = RoundedCornerShape(20.dp),
                 colors = TextFieldDefaults.colors(
-                    disabledTextColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
+                    unfocusedIndicatorColor = Color.Transparent,    
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
                 )
             )
         },

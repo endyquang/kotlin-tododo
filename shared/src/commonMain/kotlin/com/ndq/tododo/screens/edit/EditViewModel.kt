@@ -3,10 +3,12 @@ package com.ndq.tododo.screens.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ndq.tododo.models.Todo
+import com.ndq.tododo.models.TodoStatus
 import com.ndq.tododo.repositories.TodoDao
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 
 data class DraftTodo(
     val title: String = "",
@@ -36,6 +38,32 @@ class EditViewModel(private val todoDao: TodoDao, private val id: Long?) : ViewM
 
     fun updateDraft(newDraft: DraftTodo) {
         _draft.value = newDraft
+    }
+
+    fun updateStatus(status: TodoStatus) {
+        if (isLoading.value) {
+            return
+        }
+        val todo = initialTodo.value ?: return
+        val now = Clock.System.now().toEpochMilliseconds()
+        viewModelScope.launch {
+            todoDao.update(
+                todo.copy(
+                    doneAt = if (status == TodoStatus.DONE) now else null,
+                    cancelledAt = if (status == TodoStatus.CANCELLED) now else null,
+                )
+            )
+        }
+    }
+
+    fun delete() {
+        if (isLoading.value) {
+            return
+        }
+        val todo = initialTodo.value ?: return
+        viewModelScope.launch {
+            todoDao.delete(todo.id)
+        }
     }
 
     init {
