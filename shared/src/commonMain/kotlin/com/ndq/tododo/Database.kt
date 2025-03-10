@@ -5,16 +5,19 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import com.ndq.tododo.models.Preferences
 import com.ndq.tododo.models.Todo
+import com.ndq.tododo.repositories.PreferencesDao
 import com.ndq.tododo.repositories.TodoDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
 
-@Database(entities = [Todo::class], version = 1)
+@Database(entities = [Todo::class, Preferences::class], version = 2)
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getTodoDao(): TodoDao
+    abstract fun getPreferencesDao(): PreferencesDao
 }
 
 fun getRoomDatabase(
@@ -23,6 +26,7 @@ fun getRoomDatabase(
     return builder
         .setDriver(BundledSQLiteDriver())
         .setQueryCoroutineContext(Dispatchers.IO)
+        .fallbackToDestructiveMigration(false)
         .build()
 }
 

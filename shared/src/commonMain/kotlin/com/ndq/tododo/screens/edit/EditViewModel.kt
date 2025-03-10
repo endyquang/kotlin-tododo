@@ -17,7 +17,7 @@ data class DraftTodo(
 )
 
 class EditViewModel(private val todoDao: TodoDao, private val id: Long?) : ViewModel() {
-    private val _isLoading = MutableStateFlow(false)
+    private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
     private val _initialTodo = MutableStateFlow<Todo?>(null)
