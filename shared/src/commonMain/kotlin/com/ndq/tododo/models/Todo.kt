@@ -22,7 +22,7 @@ data class Todo(
         get() = cancelledAt != null
 
     val status: TodoStatus
-        get() = if (isDone) TodoStatus.COMPLETED
+        get() = if (isDone) TodoStatus.DONE
         else if (isCancelled) TodoStatus.CANCELLED
         else TodoStatus.TODO
 

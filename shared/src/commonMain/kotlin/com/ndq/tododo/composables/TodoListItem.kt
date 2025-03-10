@@ -34,6 +34,7 @@ fun TodoListItem(
     item: Todo,
     onPressed: () -> Unit,
     onCompletedChanged: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val indication = LocalIndication.current
@@ -42,7 +43,7 @@ fun TodoListItem(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
         ),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable(
                 interactionSource = interactionSource,

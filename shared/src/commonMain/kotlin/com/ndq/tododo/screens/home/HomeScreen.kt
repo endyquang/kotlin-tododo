@@ -2,9 +2,12 @@ package com.ndq.tododo.screens.home
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -15,6 +18,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,7 +34,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ndq.tododo.LocalNavController
+import com.ndq.tododo.composables.DropdownButton
 import com.ndq.tododo.composables.TodoListItem
+import com.ndq.tododo.models.TodoStatus
 import com.ndq.tododo.screens.edit.Edit
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
@@ -43,6 +49,7 @@ fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
     val navController = LocalNavController.current
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val todos by viewModel.todos.collectAsStateWithLifecycle()
+    val status by viewModel.status.collectAsStateWithLifecycle()
 
     HomeLayout(
         menuButton = {
@@ -50,7 +57,7 @@ fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
                 Icon(Icons.Filled.Menu, "Menu")
             }
         },
-        searchInput = {modifier ->
+        searchInput = { modifier ->
             TextField(
                 value = "",
                 onValueChange = { println(it) },
@@ -83,32 +90,48 @@ fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
         }
     ) {
         val listState = rememberLazyListState()
-
-        if (isLoading) {
-            CircularProgressIndicator()
-        } else if (todos.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Text(
-                    "Empty",
-                    modifier = Modifier.align(Alignment.Center),
-                    color = MaterialTheme.colorScheme.tertiary,
-                )
+        LazyColumn(state = listState) {
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(
+                        horizontal = 12.dp,
+                        vertical = 4.dp
+                    )
+                ) {
+                    TodoStatus.entries.forEach {
+                        FilterChip(
+                            onClick = { viewModel.setStatus(it) },
+                            label = { Text(it.displayName) },
+                            selected = status == it,
+                            modifier = Modifier.padding(4.dp)
+                        )
+                    }
+                }
             }
-        } else {
-            LazyColumn(
-                state = listState,
-                contentPadding = PaddingValues(20.dp),
-            ) {
+
+            if (isLoading) {
+                item {
+                    CircularProgressIndicator()
+                }
+            } else if (todos.isEmpty()) {
+                item {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        Text(
+                            "Empty",
+                            modifier = Modifier.align(Alignment.Center),
+                            color = MaterialTheme.colorScheme.tertiary,
+                        )
+                    }
+                }
+            } else {
                 items(todos, key = { it.id }) { item ->
                     TodoListItem(
                         item = item,
                         onCompletedChanged = { viewModel.toggleDone(item) },
                         onPressed = {
                             navController.navigate(route = Edit(id = item.id))
-                        }
-                    )
-                    Spacer(
-                        modifier = Modifier.height(20.dp)
+                        },
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
                     )
                 }
             }

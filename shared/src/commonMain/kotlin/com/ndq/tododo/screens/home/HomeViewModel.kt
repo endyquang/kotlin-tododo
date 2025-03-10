@@ -3,11 +3,14 @@ package com.ndq.tododo.screens.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ndq.tododo.models.Todo
+import com.ndq.tododo.models.TodoStatus
 import com.ndq.tododo.repositories.TodoDao
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -17,7 +20,14 @@ class HomeViewModel(private val todoDao: TodoDao) : ViewModel() {
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
 
-    val todos: StateFlow<List<Todo>> = todoDao.getAllFlow()
+    private val _status = MutableStateFlow(TodoStatus.TODO)
+    val status = _status.asStateFlow()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val todos: StateFlow<List<Todo>> = status.flatMapLatest {
+        println(it)
+        todoDao.getAllByStatus(it)
+    }
         .onEach {
             if (!_isLoading.value) {
                 _isLoading.value = false
@@ -37,5 +47,9 @@ class HomeViewModel(private val todoDao: TodoDao) : ViewModel() {
                 ),
             )
         }
+    }
+
+    fun setStatus(status: TodoStatus) {
+        _status.value = status
     }
 }
