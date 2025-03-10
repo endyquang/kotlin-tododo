@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -78,7 +77,7 @@ fun EditScreen(viewModel: EditViewModel) {
                 actions = {
                     var menuExpanded by remember { mutableStateOf(false) }
 
-                    if (!isLoading && (isChanged || isAddNew)) {
+                    if (!isLoading && isChanged) {
                         FilledTonalButton(
                             onClick = {
                                 viewModel.save(
@@ -92,15 +91,13 @@ fun EditScreen(viewModel: EditViewModel) {
                             },
                             shape = RoundedCornerShape(4.dp),
                             contentPadding = PaddingValues(horizontal = 4.dp),
-                            modifier = Modifier.height(36.dp).padding(horizontal = 12.dp)
+                            modifier = Modifier.height(36.dp).padding(horizontal = 4.dp)
                         ) {
                             Text(
                                 "Save",
                                 style = MaterialTheme.typography.bodyLarge
                             )
                         }
-
-                        Spacer(modifier = Modifier.width(8.dp))
                     }
 
                     Box {
