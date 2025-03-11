@@ -7,7 +7,9 @@ import com.ndq.tododo.models.Todo
 import com.ndq.tododo.models.TodoStatus
 import com.ndq.tododo.repositories.PreferencesDao
 import com.ndq.tododo.repositories.TodoDao
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +18,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 
 class HomeViewModel(
@@ -45,12 +48,15 @@ class HomeViewModel(
 
     fun toggleDone(todo: Todo) {
         viewModelScope.launch {
-            todoDao.update(
-                todo.copy(
-                    doneAt = if (todo.isDone) null else Clock.System.now().toEpochMilliseconds(),
-                    cancelledAt = null,
-                ),
-            )
+            withContext(Dispatchers.IO) {
+                todoDao.update(
+                    todo.copy(
+                        doneAt = if (todo.isDone) null else Clock.System.now()
+                            .toEpochMilliseconds(),
+                        cancelledAt = null,
+                    ),
+                )
+            }
         }
     }
 
@@ -60,7 +66,9 @@ class HomeViewModel(
 
     fun updatePreferences(preferences: Preferences) {
         viewModelScope.launch {
-            preferencesDao.upsert(preferences)
+            withContext(Dispatchers.IO) {
+                preferencesDao.upsert(preferences)
+            }
         }
     }
 }
